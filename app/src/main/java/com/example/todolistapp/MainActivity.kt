@@ -1,12 +1,15 @@
 
 package com.example.todolistapp
 
+import android.content.ContentProvider
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.text.TextUtils
 import android.widget.Toast
+import androidx.core.content.ContentProviderCompat.requireContext
+import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
-import androidx.recyclerview.widget.RecyclerView
+import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.todolistapp.data.Word
 import com.example.todolistapp.data.WordViewModel
 import kotlinx.android.synthetic.main.activity_main.*
@@ -14,15 +17,16 @@ import kotlinx.android.synthetic.main.activity_main.*
 class MainActivity : AppCompatActivity() {
 
     private lateinit var mWordViewModel: WordViewModel
-    private lateinit var todoAdapter: ListAdapter
 
     override fun onCreate(savedInstanceState: Bundle?) {
 
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
-
-        mWordViewModel = ViewModelProvider(this).get(WordViewModel::class.java)
+        val adapter = ListAdapter()
+        val recyclerView = rv
+        recyclerView.adapter = adapter
+        recyclerView.layoutManager = LinearLayoutManager(this)
 
 
 
@@ -33,7 +37,8 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun insertDataToDatabase() {
-        val todo_task = rvTodoItems.text.toString()
+        val todo_task = tvTodoItems.text.toString()
+        val isChecked = false
         if (inputCheck(todo_task)) {
             val word = Word(0, todo_task, false)
             mWordViewModel.addWord(word)
